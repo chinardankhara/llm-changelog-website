@@ -4,7 +4,7 @@
                 // Use GitHub API to list files in the 'changelogs' directory
                 // NOTE: This simple example uses the public API, might be rate-limited.
                 // For robustness, the Action could generate a manifest file (e.g., changelogs.json)
-                const repoOwner = 'your-username'; // Replace with your GH username
+                const repoOwner = 'chinardankhara'; // Replace with your GH username
                 const repoName = 'llm-changelog-website'; // Replace with your website repo name
                 const changelogsDir = 'changelogs';
 
