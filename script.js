@@ -8,7 +8,7 @@
                 const repoName = 'llm-changelog-website'; // Replace with your website repo name
                 const changelogsDir = 'changelogs';
 
-                fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${changelogsDir}`)
+                fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/${changelogsDir}`)
                     .then(response => response.json())
                     .then(data => {
                         if (Array.isArray(data)) {
