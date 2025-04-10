@@ -1,47 +1,83 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Common system font stack */
-    max-width: 800px;
-    margin: 40px auto; /* Increased top/bottom margin */
-    padding: 0 20px; /* Slightly increased side padding */
-    line-height: 1.6; /* Improved line spacing for readability */
-    color: #333; /* Slightly softer text color than pure black */
+/* Reset some defaults */
+body, h1, p, ul {
+    margin: 0;
+    padding: 0;
 }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: #f8f9fa; /* Light background for the whole page */
+    color: #212529; /* Darker text for contrast */
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px; /* Add padding inside the container */
+    background-color: #ffffff; /* White background for the content area */
+    border: 1px solid #e9ecef; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow */
+}
+
+
 header {
     text-align: center;
-    margin-bottom: 40px; /* Increased spacing below header */
-    border-bottom: 1px solid #eee; /* Subtle separator line */
-    padding-bottom: 20px; /* Padding for the separator */
+    margin-bottom: 20px; /* Reduced margin */
+    padding-bottom: 20px;
+    border-bottom: 1px solid #dee2e6; /* Slightly darker border */
 }
 
 header h1 {
-    font-weight: 600; /* Slightly bolder heading */
+    font-weight: 600;
+    font-size: 2em; /* Larger heading */
+    color: #343a40;
 }
+
+main > p { /* Style the introductory paragraph */
+    text-align: center;
+    margin-bottom: 30px;
+    color: #6c757d; /* Softer color for intro text */
+    font-size: 1.1em;
+}
+
 
 #changelog-list ul {
     list-style: none;
     padding: 0;
+    border: 1px solid #dee2e6; /* Border around the list */
+    border-radius: 5px; /* Rounded corners for the list container */
+    overflow: hidden; /* Ensure borders contain children */
 }
 #changelog-list li {
-    margin-bottom: 0; /* Remove margin, use border for separation */
-    border-bottom: 1px solid #eee; /* Use bottom border for separation */
-    padding: 15px 5px; /* Adjust padding (more vertical, less horizontal) */
-    /* Removed border and border-radius */
+    margin-bottom: 0;
+    border-bottom: 1px solid #dee2e6; /* Separator line */
+    padding: 15px 20px; /* Increased padding */
+    background-color: #fff; /* Ensure white background */
+    transition: background-color 0.2s ease-in-out; /* Hover effect */
 }
 
-/* Add border-top to the first item for consistency */
-#changelog-list li:first-child {
-    border-top: 1px solid #eee;
+#changelog-list li:last-child {
+    border-bottom: none; /* No border on the last item */
+}
+
+#changelog-list li:hover {
+    background-color: #f8f9fa; /* Subtle hover background */
 }
 
 
 #changelog-list a {
     text-decoration: none;
-    color: #007bff; /* Standard blue link color */
-    font-weight: 500; /* Slightly less bold than before */
-    transition: color 0.2s ease-in-out; /* Smooth transition for hover */
+    color: #007bff;
+    font-weight: 500;
+    display: block; /* Make the whole area clickable */
+    transition: color 0.2s ease-in-out;
 }
 
 #changelog-list a:hover {
-    color: #0056b3; /* Darker blue on hover */
-    text-decoration: underline; /* Underline on hover for clarity */
+    color: #0056b3;
+    text-decoration: none; /* Keep no underline on hover */
 }
+
+/* Footer or other elements styling could go here */

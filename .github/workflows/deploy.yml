@@ -1,0 +1,59 @@
+name: Deploy Changelog Site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Workflow runs when pushing to the main branch
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10" # Set specific Python version
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs mkdocs-material # Install mkdocs and a nice theme
+
+      # Copy necessary static files (index.html, styles.css, script.js) to the docs_dir for MkDocs
+      # MkDocs normally only processes files within its docs_dir
+      - name: Prepare files for MkDocs
+        run: |
+          mkdir -p temp_docs # Create a temporary directory MkDocs will use
+          cp index.html temp_docs/index.html # Copy main page
+          cp styles.css temp_docs/styles.css # Copy styles
+          cp script.js temp_docs/script.js # Copy script
+          # Copy markdown changelogs into a subdirectory within temp_docs
+          # This keeps them separate for easier linking/processing if needed
+          # and matches the path used in script.js (changelogs/filename.html)
+          # Check if changelogs directory exists before copying
+          if [ -d "changelogs" ]; then
+            cp -r changelogs temp_docs/changelogs
+          else
+            mkdir -p temp_docs/changelogs # Create empty dir if no changelogs yet
+            echo "No changelogs directory found, skipping copy."
+          fi
+
+      - name: Build site with MkDocs
+        run: mkdocs build --config-file mkdocs.yml --site-dir _site # Build using temp_docs
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GIT_TOKEN }} # Use the GIT_TOKEN secret
+          publish_dir: ./_site # Deploy the contents of the build output directory
+          publish_branch: gh-pages # Explicitly deploy to the gh-pages branch
+          force_orphan: true # Create a clean history on the gh-pages branch 
