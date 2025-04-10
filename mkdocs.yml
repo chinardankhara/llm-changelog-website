@@ -3,6 +3,8 @@ site_url: "https://chinardankhara.github.io/llm-changelog-website/" # Replace wi
 repo_url: "https://github.com/chinardankhara/llm-changelog-website/" # Optional: Link to repo
 repo_name: "chinardankhara/llm-changelog-website" # Optional: Text for repo link
 
+use_directory_urls: false
+
 theme:
   name: material # Using the popular Material for MkDocs theme
   palette:
@@ -39,4 +41,5 @@ markdown_extensions:
   - pymdownx.highlight: # Code highlighting
       anchor_linenums: true
   - pymdownx.superfences # Allows nesting code blocks etc.
-  - toc: # Add table of contents support 
+  - toc: # Add table of contents support
+      permalink: true 
