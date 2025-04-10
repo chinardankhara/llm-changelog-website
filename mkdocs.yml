@@ -1,0 +1,42 @@
+site_name: "Tagline AI Changelogs"
+site_url: "https://chinardankhara.github.io/llm-changelog-website/" # Replace with your actual GitHub Pages URL
+repo_url: "https://github.com/chinardankhara/llm-changelog-website/" # Optional: Link to repo
+repo_name: "chinardankhara/llm-changelog-website" # Optional: Text for repo link
+
+theme:
+  name: material # Using the popular Material for MkDocs theme
+  palette:
+    primary: blue # Example theme color
+  features:
+    - navigation.tabs # Use tabs for top-level navigation if you add more sections
+
+# Tell MkDocs where the source files are (the temporary dir created in the action)
+docs_dir: 'temp_docs'
+
+# Define navigation (optional but good practice)
+# MkDocs will automatically find pages if you omit this, but explicit is better
+# It won't automatically find files *outside* the top-level docs_dir unless specified here
+nav:
+  - Home: index.html # Link to your main index page
+  # Add links to individual changelogs if you want them in the main nav,
+  # otherwise script.js will list them on the homepage.
+  # Example (if you wanted manual nav links):
+  # - Changelogs:
+  #   - 'v1.7': changelogs/mendableai-firecrawl_v1.6.0_to_v1.7.0.md # Reference MD here, MkDocs converts path
+
+# Point to your custom CSS - relative to the final *output* files in _site
+# Since index.html is at the root of _site, styles.css is also at the root
+extra_css:
+  - styles.css
+
+# Point to your custom JS - relative to the final *output* files in _site
+extra_javascript:
+  - script.js
+
+# Configure markdown extensions (optional, add features)
+markdown_extensions:
+  - admonition # Adds nice coloured boxes for notes/warnings etc.
+  - pymdownx.highlight: # Code highlighting
+      anchor_linenums: true
+  - pymdownx.superfences # Allows nesting code blocks etc.
+  - toc: # Add table of contents support 
