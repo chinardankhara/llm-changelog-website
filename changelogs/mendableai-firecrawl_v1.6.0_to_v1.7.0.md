@@ -1,82 +1,65 @@
-# 🔥 mendableai/firecrawl Changelog: v1.6.0 → v1.7.0 (2025-04-03)
+# 🔥 mendableai/firecrawl Changelog: v1.6.0 → v1.7.0 (2025-04-04)
 
-This release introduces the alpha version of Deep Research with structured output support and custom analysis prompts. It significantly expands LLM support by adding Claude 3.7, Mistral Small 3.1, Gemini 2.5 Pro, and DeepSeek V3. Crawling capabilities are enhanced with a new `maxDiscoveryDepth` parameter, and numerous improvements have been made to scraping, extraction, SDKs, rate limiting, and error handling, alongside several bug fixes.
+This release introduces the Alpha version of the Deep Research feature, enabling structured data extraction and customizable analysis prompts. Key additions include the `maxDiscoveryDepth` parameter for crawls and making URLs optional in the `/extract` endpoint. Numerous improvements enhance rate limiting, notifications, SDK functionality, and overall stability, alongside several important bug fixes.
 
 ## 📈 New Features
 
 *   **Deep Research (Alpha)**:
-    *   Introduced Alpha v1 featuring structured output generation using Zod (JS) or Pydantic (Python) schemas (#1365, a50dc10)
-    *   Added `analysisPrompt` parameter to customize the final analysis step in both the API and SDKs (#1351, e97a279, 4fc5e6f)
-*   **Crawl API**:
-    *   Added `maxDiscoveryDepth` parameter to limit the depth of link discovery during crawls (#1329, 7cf2e52)
+    *   Introduce Deep Research Alpha v1, enabling structured outputs using Zod/Pydantic schemas and custom analysis prompts via the `/v1/deep-research` endpoint and SDKs (#1365, #1351, #4fc5e6f).
+*   **Crawl API (`/crawl`)**:
+    *   Add `maxDiscoveryDepth` parameter to control the maximum depth the crawler follows links from the initial URLs (#1329).
 *   **Extract API (`/extract`)**:
-    *   Made the `urls` parameter optional, enabling extraction directly from provided `html` or `markdown` content (#1346, 20c93db, f1206e4)
+    *   Make the `urls` parameter optional, allowing extraction directly from provided `html` or `markdown` content without needing a URL (#1346, #20c93db).
 *   **Scrape API (`/scrape`)**:
-    *   Added `all: true` option to the `pageOptions.actions.click` action, allowing interaction with *all* elements matching the selector instead of just the first one (#1342, d0b468e)
-    *   Return JavaScript execution results (`jsReturns`) when using the Fire Engine scraper (`pageOptions.runJs`) (#1385, 46048bc)
+    *   Add `all: true` option to the `pageOptions.actions.click` parameter, allowing interaction with *all* elements matching the selector instead of just the first (#1342).
+    *   Return results from JavaScript executed via `pageOptions.runJs` back in the scrape response (#1385).
+    *   Introduce a `diff` transformer (`extractorOptions.mode: 'diff'`) to compare scraped content against a previous version (#1405).
 *   **LLM Support**:
-    *   Added support for Claude 3.7 models (#1336, db3faf8)
-    *   Added examples demonstrating usage with Mistral Small 3.1 (#1366, 2fb29ee, #1369, 6a6199e)
-    *   Added examples demonstrating usage with Gemini 2.5 Pro (#1380, 6e8644a, #1381, be43598)
-    *   Added examples demonstrating usage with DeepSeek V3 (#1383, da76524, #1384, 28928f0)
+    *   Add support for Claude 3.7 models in relevant features (#1336).
 
 ## 🔧 Improvements
 
 *   **Rate Limiting & Concurrency**:
-    *   Improved internal rate limiting logic, particularly for concurrent browser usage (#1331, 1e6b484)
-    *   Implemented email notifications for jobs hitting concurrency limits, conditional on team subscription status (#1398, 73a297d, #1404, 3300c6c, #1409, b57d5f2, 58e587d, 7468464, b900f34, 426151c)
-    *   Added a `warning` field to scraped document results when processing was affected by concurrency limits (#1348, 200de9e)
-    *   Refined internal rate limit parameters across various tiers and scenarios (9edbdc9, d438b23, d54af97, 3e0d3db, 867e545, e8f27be, 2b39788, e799cf2, b3b6348, 8c1579d)
-*   **Scraping & Extraction**:
-    *   Enhanced HTML content extraction logic to better handle sites using specific structures (e.g., forcing inclusion of `<main>` tags with Swoogo classes) (2e2c3d5)
-    *   Introduced a new `diff` transformer for comparing scrape results (24f5199)
-    *   Added more detailed logging during scrape operations to aid debugging (611c2d9)
-    *   Improved clarity of log messages for high resource usage errors during scraping (da6b750)
-    *   Updated internal ACUC (credit) balance adjustment logic (0c457e6, 6dc5b1c, 0bdaa97, 5e35782, e0a3c54)
-*   **Crawling**:
-    *   Increased maximum allowed execution time for crawls beyond the previous 24-hour limit (d12feae)
-*   **SDKs**:
-    *   Implemented automatic retries (up to 3 times) for status check calls (`crawlStatus`, `batchScrapeStatus`) in the JS SDK if an initial error occurs (#1343, ca93ba6)
-    *   Enhanced SDK error handlers to properly manage `403 Forbidden` responses (#1357, 6d3c639)
+    *   Refine rate-limiting logic, particularly for concurrent browser usage across different subscription tiers (#1331, #9edbdc9, #d438b23, #d54af97, #3e0d3db, #867e545).
+    *   Enhance the notification system for concurrency limits, providing clearer messages based on job type (scrape/crawl) and subscription status (#1398, #1404, #1409).
+    *   Add a `concurrencyLimited` warning field to scrape results if the job was impacted by concurrency limits (#1348).
+*   **SDKs (JS & Python)**:
+    *   Update SDKs to support new features: optional `urls` in extract, custom Deep Research prompts, and receiving JS return values from scrape (#1346, #1351, #4fc5e6f, #1385).
+    *   Improve SDK error handling to specifically manage `403 Forbidden` responses (#1357).
+*   **Logging & Error Handling**:
+    *   Improve clarity of log messages for errors related to high resource usage during scraping (#da6b750).
+    *   Increase logging detail within scrape operations to better diagnose issues (#611c2d9).
+*   **HTML Extraction**:
+    *   Improve content extraction reliability for specific website structures (e.g., Swoogo event pages) by forcing inclusion of certain tags (#2e2c3d5).
 *   **Search**:
-    *   Removed default category filtering in SearXNG integration, allowing broader engine usage without needing explicit category overrides (#1319, c53df86)
-*   **Billing**:
-    *   Adjusted credit check logic: if a requested crawl limit slightly exceeds available credits, it now snaps to the available amount instead of failing the job (#1350, 670ca84)
-*   **Internal**:
-    *   Completed Tally API switchover for internal metrics (#1328, 71b6b83)
-    *   Improved logging for internal Fire Engine health checks (42236ef)
-    *   Changed severity of some internal error logs to warnings where appropriate (c6cad94)
+    *   Remove default categories in SearXNG integration, allowing users to specify engines without conflicting defaults (#1319).
 
 ## 🐛 Bug Fixes
 
 *   **Crawl**:
-    *   Fixed an issue where sitemaps containing links outside the initial domain/scope could incorrectly add unrelated URLs to the crawl queue (#1334, c7ae50d)
-    *   Corrected tracking of crawl origin for internal analytics (f0e0d3e)
+    *   Prevent sitemaps from incorrectly adding unrelated links ("poisoning") to the crawl queue (#1334).
+    *   Fix issue preventing crawl jobs from running longer than 24 hours (#d12feae).
+    *   Ensure the origin of crawl jobs is tracked correctly within the API (#f0e0d3e).
+    *   Adjust crawl limit behavior to automatically cap the `crawlerOptions.limit` at the user's remaining credits if the requested limit is too high, preventing an error (#1350).
+*   **Scrape**:
+    *   Ensure logs generated during scrape operations are correctly associated with and visible in API queries (#bad8224).
+*   **Extract**:
+    *   Resolve issues with LLM extraction (`llmExtract`) caused by unsupported JSON schema properties (#1335).
+*   **Search**:
+    *   Fix potential circular JSON structure errors during error handling within the search function (#1330).
 *   **Map API (`/map`)**:
-    *   Resolved a bug where filtering map results by `path` failed if the path data was indexed (#1333, 134de67)
-*   **LLM Extract**:
-    *   Removed unsupported properties (`additionalProperties`, `patternProperties`) from generated JSON schemas sent to LLMs, preventing potential extraction failures (#1335, c3ebfaf)
-*   **Search API (`/search`)**:
-    *   Fixed an error handler that could fail due to circular JSON structures when logging certain response objects (#1330, e9804d2)
+    *   Correct an issue where map jobs failed to filter results by path correctly if the path was indexed (#1333).
 *   **JS SDK**:
-    *   Resolved a Zod type validation error in the `/extract` function helper caused by potential discrepancies in Zod versions between the SDK and user projects (0154e40)
+    *   Fix Zod type validation errors in the `extract` method arising from potential Zod version discrepancies (#0154e40).
+    *   Implement automatic retries (up to 3 times) for status check calls (`crawl` and `batchScrape`) if they initially return an error (#1343).
 *   **Python SDK**:
-    *   Addressed minor internal issues within the Python SDK (7e7b7e1)
-*   **Logging**:
-    *   Ensured logs generated during scrape operations are correctly associated with and visible in API query results (bad8224)
+    *   Address minor inconsistencies and issues within the Python SDK (#7e7b7e1).
 
 ## 🔒 Security
 
-*   Prevented potentially sensitive BullMQ connection secrets from being logged (f87e117)
+*   Prevent potentially sensitive BullMQ connection secrets from being logged (#f87e117).
 
 ## 📚 Documentation
 
-*   Added new examples showcasing various LLM integrations and features:
-    *   Claude 3.7 Stock Analyzer (#1336)
-    *   Mistral Small 3.1 Crawler (#1366)
-    *   Mistral Small 3.1 Company Researcher (#1369)
-    *   Deep Research Apartment Finder (#1378)
-    *   Gemini 2.5 Pro Crawler (#1380)
-    *   Gemini 2.5 Company Extractor (#1381)
-    *   DeepSeek V3 Crawler (#1383)
-    *   DeepSeek V3 Company Researcher (#1384)
+*   Add numerous examples showcasing integration with various LLMs (Claude 3.7, Mistral Small 3.1, Gemini 2.5 Pro, DeepSeek V3) for crawling, extraction, and deep research (#1336, #1366, #1369, #1380, #1381, #1383, #1384).
+*   Include a comprehensive example demonstrating the Deep Research feature for an "Apartment Finder" application (#1378).
