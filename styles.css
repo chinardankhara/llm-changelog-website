@@ -1,25 +1,47 @@
 body {
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Common system font stack */
     max-width: 800px;
-    margin: 20px auto;
-    padding: 0 15px;
+    margin: 40px auto; /* Increased top/bottom margin */
+    padding: 0 20px; /* Slightly increased side padding */
+    line-height: 1.6; /* Improved line spacing for readability */
+    color: #333; /* Slightly softer text color than pure black */
 }
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px; /* Increased spacing below header */
+    border-bottom: 1px solid #eee; /* Subtle separator line */
+    padding-bottom: 20px; /* Padding for the separator */
 }
+
+header h1 {
+    font-weight: 600; /* Slightly bolder heading */
+}
+
 #changelog-list ul {
     list-style: none;
     padding: 0;
 }
 #changelog-list li {
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 4px;
+    margin-bottom: 0; /* Remove margin, use border for separation */
+    border-bottom: 1px solid #eee; /* Use bottom border for separation */
+    padding: 15px 5px; /* Adjust padding (more vertical, less horizontal) */
+    /* Removed border and border-radius */
 }
+
+/* Add border-top to the first item for consistency */
+#changelog-list li:first-child {
+    border-top: 1px solid #eee;
+}
+
+
 #changelog-list a {
     text-decoration: none;
-    color: #0366d6;
-    font-weight: bold;
+    color: #007bff; /* Standard blue link color */
+    font-weight: 500; /* Slightly less bold than before */
+    transition: color 0.2s ease-in-out; /* Smooth transition for hover */
+}
+
+#changelog-list a:hover {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline; /* Underline on hover for clarity */
 }
