@@ -1,84 +1,82 @@
-# 🔥 firecrawl Changelog: v1.5.0 → v1.6.0 (2024-03-07)
+# 🔥 mendableai/firecrawl Changelog: v1.5.0 → v1.6.0 (2025-03-07)
 
-This release introduces the Deep Research Alpha feature, migrates core AI functionality to the Vercel AI SDK enabling Ollama and Claude 3.7 support, and adds OpenAI-compatible API support for self-hosting. Significant improvements were made to crawling logic, self-hosting configuration, billing systems, and database performance via read replica routing, alongside numerous bug fixes.
+This release introduces significant enhancements, including the migration to the AI-SDK for broader model support (Ollama, OpenAI-compatible APIs) and improved extraction capabilities. Deep Research functionality enters alpha with new controls and callbacks. Self-hosting is enhanced with Valkey support and configuration options, while performance is boosted through Supabase read replica routing for authentication and crawling. Numerous bug fixes address issues in scraping, crawling, extraction, and billing.
 
 ## 📈 New Features
 
-*   **Deep Research Alpha**:
-    *   Introduced initial alpha version of the Deep Research feature (#1271, #1284)
-    *   Added support for `maxUrls` and `sources` parameters (#1271)
-    *   Implemented `onSource` callback for real-time source updates (#1284)
-    *   Renamed `topic` parameter to `query` for clarity (#1284)
-*   **AI & Extraction**:
-    *   Migrated core LLM extraction logic to Vercel AI SDK for enhanced flexibility and future model support (#1220)
-    *   Added support for `Ollama` models via the new AI SDK integration (#1220)
-    *   Implemented support for `Claude 3.7` models in crawler and extractor (#1257, #1291)
-    *   Enabled self-hosted instances to use any OpenAI-compatible API endpoint (#1245)
-*   **SDKs**:
-    *   Added `regexOnFullURL` option to JS SDK crawl parameters for more flexible include/exclude matching (#1303)
-*   **API**:
-    *   Introduced a new `/v1/token-usage` endpoint for monitoring token consumption (Implied by file changes)
-*   **Billing**:
-    *   Implemented a new batch billing system for improved efficiency (#1264, b72e21a)
+*   **AI & Extraction:**
+    *   Migrated core LLM extraction logic to the Vercel AI SDK, enabling broader model compatibility (#1220)
+    *   Added support for Ollama models in extraction workflows (#1220)
+    *   Enabled self-hosted instances to use any OpenAI-compatible API for extraction and AI features (#1245)
+*   **Deep Research (Alpha):**
+    *   Introduced alpha version of Deep Research feature (#289e351, #22d4f0d)
+    *   Added `maxUrls` and `maxSources` parameters for controlling research scope (#289e351)
+    *   Implemented `onSource` callback in SDKs for real-time source discovery updates (#22d4f0d)
+*   **Billing:**
+    *   Implemented a new batch billing system for improved efficiency and accuracy (#b72e21a, #9ad9478)
+*   **SDKs (JS/Python):**
+    *   Added support for the new Deep Research feature and its parameters/callbacks (#22d4f0d)
+    *   Introduced `regexOnFullURL` option for more flexible crawl path matching (#e1cfe1d)
+*   **Examples:**
+    *   Added example: Claude 3.7 Web Crawler (#1257)
+    *   Added example: Claude 3.7 Web Extractor (#1291)
+    *   Added example: Gemini GitHub Analyzer (#1229)
+    *   Added example: GPT-4.5 Web Crawler (#1276)
+    *   Added example: Groq Web Crawler (#1267)
 
 ## 🔧 Improvements
 
-*   **Crawling & Scraping**:
-    *   Improved handling of `includes` and `excludes` parameters, including dropping initial scrape if excluded and fixing various logic bugs (#1303)
-    *   Enhanced redirect handling to differentiate between cross-origin and same-origin redirects (#1279)
-    *   Updated `/v1/crawl-status-ws` WebSocket endpoint behavior to ignore errors similarly to the standard `/v1/crawl-status` endpoint (#1234)
-    *   Increased the default limit for the `map` endpoint to 30,000 URLs (#1d3757b)
-    *   Improved `maxUrls` handling and caching logic in LLMStxt generation (#1285)
-    *   Updated internal blocklist used during scraping (#ae010a7)
-*   **Self-Hosting**:
-    *   Added experimental support for using `Valkey` as an alternative to Redis via `docker-compose.yaml` (#1228)
-    *   Allowed configuration of the internal API port through environment variables (#82adf81)
-    *   Enabled passing `Ollama`-specific environment variables via `docker-compose.yaml` (#1269)
-    *   Optimized Dockerfile build stages for faster and more reliable builds (#1231, #1232)
-*   **Billing**:
-    *   Added comprehensive billing tests and fixed miscellaneous related issues (#1283)
-    *   Refined batch billing processing logic (#1de5a2c)
-*   **Internal & Infrastructure**:
-    *   Improved job logging for better traceability (#1263)
-    *   Refined rate limiting logic for API endpoints (#6c51ef4, #72d894c, #1ced546)
+*   **Self-Hosting:**
+    *   Added option to use Valkey (Redis fork) as the cache/queue backend via `docker-compose.yaml` (#1228)
+    *   Allowed configuration of the internal API port using the `INTERNAL_PORT` environment variable (#82adf81)
+    *   Enabled passing Ollama-related environment variables (`OLLAMA_API_BASE_URL`, `OLLAMA_MODEL`) through `docker-compose.yaml` (#1269)
+    *   Optimized Dockerfile build process for better dependency management and smaller image size (#1231, #1232)
+*   **Crawling:**
+    *   Enhanced `includes`/`excludes` logic: correctly handles patterns, drops initial non-matching scrapes, and adds `regexOnFullURL` option for SDKs (#e1cfe1d, #16c3057)
+    *   Improved handling of cross-origin redirects during crawls (#1279)
+    *   Aligned `crawl-status-ws` (WebSocket) behavior to ignore certain errors, matching the standard `/v1/crawl-status` endpoint (#1234)
+    *   Improved `maxUrls` handling in crawl jobs and ensured `llmstxt` cache respects this limit (#5a18869)
+    *   Increased the default URL limit for the `/v1/map` endpoint to 30,000 (#1d3757b)
+*   **Billing & Usage:**
+    *   Refined credit billing logic and added comprehensive billing tests (#9ad9478, #1de5a2c)
+*   **Internal & API:**
+    *   Improved logging details for background jobs like crawling and indexing (#1263)
+    *   Enhanced rate limiting mechanisms (#6c51ef4, #72d894c, #1ced546)
+    *   Updated internal website blocklist (#ae010a7)
 
 ## 🐛 Bug Fixes
 
-*   **Scraping & Extraction**:
-    *   Fixed character set detection for fetched content, ensuring correct decoding (#1221)
-    *   Improved regex for parsing `<meta charset="...">` tags (#1265)
+*   **Scraping:**
+    *   Significantly improved character set detection by checking both `<meta>` tags and `Content-Type` headers, fixing decoding issues for various websites (#1221, #7bf04d4)
+    *   Increased timeouts for stealth proxy operations to prevent premature failures on slow sites (Mentioned in #1221 context)
+*   **Crawling:**
+    *   Fixed issue where providing empty `includes` or `excludes` arrays caused crawl jobs to fail (#1223)
+    *   Corrected crawler checks for certain strings, likely improving ad/tracker avoidance (#c22c87a)
+*   **Extraction & AI:**
     *   Resolved errors related to token limits during the LLM extraction process (#1236)
-    *   Fixed handling of AI responses that return JSON within a markdown code block (#1280)
-    *   Corrected an issue where the system prompt was missing from extraction parameters (#8cfc946)
-*   **Crawling**:
-    *   Prevented errors when empty `includes` or `excludes` arrays were provided (#1223)
-    *   Fixed crawler checks for certain strings, improving detection of ads/trackers or specific content patterns (#c22c87a)
-*   **Self-Hosting & Docker**:
-    *   Forced Docker container host binding to `0.0.0.0` to resolve environment variable precedence issues (#1225)
-    *   Ensured `SearXNG` parameters are correctly passed in Docker Compose setups (#51bc775)
-*   **SDKs**:
-    *   Fixed the JS SDK build process to ensure it's correctly built before publishing (#856ec37)
-    *   Addressed various functional issues within the JS SDK (#39b6113)
-*   **Authentication & Billing**:
-    *   Corrected team membership checks within credit billing logic (#7b05512)
-    *   Resolved issues related to authentication using preview tokens (#1305)
-    *   Fixed caching behavior for Authentication/Usage Count (ACUC) lookups (#44bf592)
-    *   Addressed multiple issues related to database read replica routing for authentication checks (#8620bf3, #1beadf3, #57b3136, #5a149a1, #982b3da)
+    *   Fixed parsing issues when AI models return JSON responses wrapped in markdown code blocks (e.g., ```json ... ```) (#1280)
+    *   Corrected an issue where the `systemPrompt` was missing from extraction parameters (#8cfc946)
+*   **Self-Hosting:**
+    *   Forced Docker container host binding to `0.0.0.0` to resolve environment variable precedence conflicts (#1225)
+    *   Ensured SearXNG parameters (`SEARXNG_BASE_URL`) are correctly passed in the Docker Compose setup (#51bc775)
+*   **Billing:**
+    *   Fixed incorrect team checks within the credit billing logic (#7b05512)
+*   **Authentication & Usage:**
+    *   Addressed caching problems related to Active User Count (ACUC) checks (#44bf592)
+*   **SDKs:**
+    *   Fixed the JS SDK build process in CI to ensure it's correctly built before publishing (#856ec37)
+    *   Addressed various minor issues in the JS SDK (#39b6113)
+*   **API & Internal:**
+    *   Temporarily disabled the `/crawlPreview` endpoint due to instability (#e6c3f20)
+    *   Fixed handling of preview tokens (#1305)
 
 ## 🚀 Performance
 
-*   **Database**:
-    *   Implemented routing for specific read operations (like authentication checks and crawling metadata) to Supabase read replicas, reducing load on the primary database (#904e69b, #67ee266, #a1e6c13)
-    *   Optimized Authentication/Usage Count (ACUC) caching duration to 1 hour (#44bf592)
+*   Implemented Supabase read replica routing for database queries related to authentication (ACUC) and crawl status checks, reducing load on the primary database (#904e69b, #67ee266, #8620bf3, #a1e6c13)
 
 ## 📚 Documentation
 
-*   **Examples**:
-    *   Added a new example demonstrating web crawling using Groq (`groq_web_crawler`) (#1267)
-    *   Added a new example showcasing a GitHub analyzer using Gemini (`gemini-github-analyzer`) (#1229)
-    *   Added a new example for web crawling with GPT-4.5 (`gpt-4.5-web-crawler`) (#1276)
-    *   Added a new example for web crawling with Claude 3.7 (`claude3.7-web-crawler`) (#1257)
-    *   Added a new example for web extraction using Claude 3.7 (`claude3.7-web-extractor`) (#1291)
-*   **Guides**:
-    *   Updated `SELF_HOST.md` with details on embedding parameters and configuring OpenAI-compatible APIs (#1220, #1245)
-    *   Removed an erroneous `required` field definition from API documentation (#1282)
+*   Removed an erroneous `required` field definition from the API documentation (#1282)
+*   Updated `SELF_HOST.md` to include information about the `EMBEDDING_MODEL_PROVIDER` parameter and the option to use Valkey (#25d9bdb, #bfe6a0a)
+
+Suggested Filename: `ai-sdk_deep-research_perf_v1.5.0_to_v1.6.0.md`
